@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import MeetupList from '../components/meetups/MeetupList';
-import Layout from '../components/layout/Layout';
+
 
 const DUMMY_MEETUPS = [
 	{
@@ -20,12 +21,30 @@ const DUMMY_MEETUPS = [
 	},
 ];
 
-function HomePage() {
+function HomePage(props) {
+    const [loadedMeetups, setLoadedMeetups] = useState([]);
+
+    useEffect(() => {
+        // send a http request and fetch data
+        setLoadedMeetups(DUMMY_MEETUPS);
+    }, []);
 	return (
-		<Layout>
-			<MeetupList meetups={DUMMY_MEETUPS} />
-		</Layout>
+	
+		<MeetupList meetups={loadedMeetups} />
+	
 	);
 }
 
+export async function getStaticProps() {
+ // fetch data from an API
+ return {
+     props: {
+         meetups: DUMMY_MEETUPS
+     },
+     revalidate: 2000 // updates every 2000 seconds
+ } 
+}
+
+// called before the component function -> async
+// code will never be executed on the client side
 export default HomePage;
